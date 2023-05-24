@@ -1,11 +1,12 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { DefaultJson } from "../../defaultvalue";
+import { formValue } from "../../models/interface";
 
-
-
+type InitValue = formValue[];
+const initialState: InitValue = DefaultJson;
 export const TransactionSlice = createSlice({
   name: "transaction",
-  initialState: DefaultJson,
+  initialState,
   reducers: {
     addTransaction: (state, action) => {
       if (state.length === 0) {
@@ -16,14 +17,15 @@ export const TransactionSlice = createSlice({
     },
     updateTransaction: (state, action) => {
       const { formValues, id } = action.payload;
-      const newId = parseInt(id);
-      const index = state.findIndex((ele) => ele.id === newId);
+      const index = state.findIndex((ele) => ele.id === parseInt(id));
+  
+      
       state[index] = formValues;
     },
     deleteTransaction: (state, action) => {
-      const { id } = action.payload;
+      const  id  = action.payload;
+      
       let filterReduxData = state;
-      console.log(current(filterReduxData), id, "filterReduxData");
       const filterDeleteData = filterReduxData.filter((element, index) => {
         return element.id !== id;
       });

@@ -1,4 +1,4 @@
-import { Link, useParams} from "react-router-dom";
+import { Link} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,18 +9,8 @@ import '../user/style.css'
 import { useDispatch, useSelector } from "react-redux";
 import { addTransaction, updateTransaction} from "../Redux/Transactionduck";
 import { RootState } from "../Redux/store";
+import { formValue } from "../../models/interface";
 
-type  formValue = {
-  transDate: string;
-  month: string;
-  transType: string;
-  frmAcc: string;
-  toAcc: string;
-  amount: string;
-  filename: string;
-  notes: string;
-  id : string|number;
-}
 function FinanceTracker({updateFormValue,id,isUpdate}:any) {
     let initialValues : formValue;
     updateFormValue
@@ -44,7 +34,7 @@ function FinanceTracker({updateFormValue,id,isUpdate}:any) {
           amount: "",
           filename: "",
           notes: "",
-          id:"",
+          id:0,
         });
   
   const navigate = useNavigate();
@@ -138,8 +128,8 @@ console.log(formValues);
         } else {
           let previousId = data[data.length - 1].id;
           formValues.id = previousId + 1;
+          dispatch(addTransaction(formValues));
         }
-        dispatch(addTransaction(formValues));
       } 
       else{
         formValues.id = 1;

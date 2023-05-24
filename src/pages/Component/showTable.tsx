@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Transaction } from "./transactiontable";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../Redux/hooks";
 import { Cookies } from "react-cookie";
 import { RootState } from "../Redux/store";
 
 
 const ShowTable = () => {
-  const transaction_redux = useSelector(
+  const transaction_redux = useAppSelector(
     (state: RootState) => state.transaction
   );
 
@@ -72,9 +72,7 @@ const ShowTable = () => {
 
   return (
     <>
-      <div>
-        <input type="button" onClick={handleLogout} value="Logout" />
-      </div>
+     
 
       <>
         {getData ? (
@@ -124,9 +122,12 @@ const ShowTable = () => {
         )}
       </>
 
-      <Link to={"create"} className="btn btn-secondary">
+      <Link to={"create"} className="btn btn-secondary ">
         Create Transaction
       </Link>
+      <div>
+        <input type="button" className="btn btn-primary mt-2" onClick={handleLogout} value="Logout" />
+      </div>
     </>
   );
 };

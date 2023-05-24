@@ -8,56 +8,70 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import "./index.css";
-// import App from './App'
-// import Login from "./pages/Component/login";
-
+import Login from "./pages/Component/login";
 import reportWebVitals from "./reportWebVitals";
-// import ViewTransaction from "./pages/Component/transaction";
+import ViewTransaction from "./pages/Component/transaction";
 import UpdateTransaction from "./pages/Component/update";
-// import Registration from "./pages/Component/registration";
+import Registration from "./pages/Component/registration";
 import FinanceTracker from "./pages/user/form";
-// import Error from "./pages/Component/Error";
+import Error from "./pages/Component/Error";
 import { Cookies, CookiesProvider } from "react-cookie";
-// import App from "./App";
 import { FinanceStore } from "./pages/Redux/store";
 import { Provider } from "react-redux";
 import ShowTable from "./pages/Component/showTable";
-// import ErrorBoundary from "./pages/Component/ErrorBoundary";
+// import ErrorBoundary from "react-error-boundary";
+// import { Fallback } from "./pages/Component/fallback";
 
-// const Protected = (props: any) => {
-//   const login = new Cookies().get("mycookie");
-//   const { isPublic, cmp } = props;
-//   if (isPublic) {
-//     if (!login) {
-//       return cmp;
-//     } else {
-//       return <Navigate to="/showTable" />;
-//     }
-//   } else {
-//     if (login) {
-//       return cmp;
-//     } else {
-//       return <Navigate to="/login" />;
-//     }
-//   }
+const Protected = (props: any) => {
+  const login = new Cookies().get("mycookie");
+  const { isPublic, cmp } = props;
+  if (isPublic) {
+    if (!login) {
+      return cmp;
+    } else {
+      return <Navigate to="/showTable" />;
+    }
+  } else {
+    if (login) {
+      return cmp;
+    } else {
+      return <Navigate to="/login" />;
+    }
+  }
+};
+// const errorHandler = (error: any, errorInfo: any) => {
+//   console.log("logging", error, errorInfo);
 // };
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
-      {/* <Route path="login" element={<Protected isPublic cmp={<Login />} />} /> */}
-      {/* <Route
+      <Route
+        path="login"
+        element={
+          // <ErrorBoundary FallbackComponent={({error,resetErrorBoundary})=>(
+          //   <Fallback
+          //   error={error}
+          //   resetErrorBoundary={resetErrorBoundary}/>
+          // )} onError={errorHandler}>
+            <Protected isPublic cmp={<Login />} />
+          // </ErrorBoundary>
+        }
+      />
+      <Route
         path="registration"
         element={<Protected isPublic cmp={<Registration />} />}
-      /> */}
+      />
       <Route path="showTable">
-        <Route path="" element={<ShowTable />} />
-        {/* <Route path=":id" element={<ViewTransaction />} /> */}
-        <Route path="create" element={<FinanceTracker />} />
-        <Route path="update/:id" element={<UpdateTransaction />} />
+        <Route path="" element={<Protected cmp={<ShowTable />} />} />
+        <Route path=":id" element={<Protected cmp={<ViewTransaction />} />} />
+        <Route path="create" element={<Protected cmp={<FinanceTracker />} />} />
+        <Route
+          path="update/:id"
+          element={<Protected cmp={<UpdateTransaction />} />}
+        />
       </Route>
       <Route path="" element={<Navigate to={"/showTable"} />} />
-      {/* <Route path="*" element={<Protected cmp={<Error />} />} /> */}
+      <Route path="*" element={<Protected cmp={<Error />} />} />
     </Route>
   )
 );

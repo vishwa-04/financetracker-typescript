@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../user/css/transactiontable.css";
-import { useDispatch, useSelector } from "react-redux";
 import { deleteTransaction } from "../Redux/Transactionduck";
 import { RootState } from "../Redux/store";
 import { months } from "../../defaultvalue";
+import { useAppDispatch, useAppSelector } from "../Redux/hooks";
+import { formValue } from "../../models/interface";
 
 export const Transaction = (props:any) => {
-  const transaction_redux = useSelector((state:RootState) => state.transaction);
+  const transaction_redux = useAppSelector((state:RootState) => state.transaction);
   console.log(transaction_redux, "this is my redux");
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const sortOrder = useRef("");
   const [lastSortKey, setlastSortKey] = useState(null);
@@ -126,7 +127,9 @@ export const Transaction = (props:any) => {
   }
 
   function deleteRecord(id:number) {
-    dispatch(deleteTransaction({ id }));
+    console.log(id,"deletee");
+    
+    dispatch(deleteTransaction(id));
   }
 
   return (
@@ -190,7 +193,7 @@ export const Transaction = (props:any) => {
         <tbody>
           <>
             {getData ? (
-              getData.slice(firstIndex, lastIndex).map((data:any, index:number) => {
+              getData.slice(firstIndex, lastIndex).map((data:formValue, index:number) => {
                 return (
                   <tr key={index}>
                     <td>{data.transDate}</td>
@@ -203,7 +206,7 @@ export const Transaction = (props:any) => {
                         style: "currency",
                         currency: "INR",
                         minimumFractionDigits: 0,
-                      }).format(data.amount)}
+                      }).format(parseInt(data.amount))}
                     </td>
                     <td>
                       <img
