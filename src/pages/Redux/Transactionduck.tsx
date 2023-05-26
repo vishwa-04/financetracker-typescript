@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { DefaultJson } from "../../defaultvalue";
 import { formValue } from "../../models/interface";
 
-type InitValue = formValue[];
+export type InitValue = formValue[];
 const initialState: InitValue = DefaultJson;
 export const TransactionSlice = createSlice({
   name: "transaction",
@@ -18,13 +18,12 @@ export const TransactionSlice = createSlice({
     updateTransaction: (state, action) => {
       const { formValues, id } = action.payload;
       const index = state.findIndex((ele) => ele.id === parseInt(id));
-  
-      
+
       state[index] = formValues;
     },
     deleteTransaction: (state, action) => {
-      const  id  = action.payload;
-      
+      const id = action.payload;
+
       let filterReduxData = state;
       const filterDeleteData = filterReduxData.filter((element, index) => {
         return element.id !== id;

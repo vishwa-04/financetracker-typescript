@@ -36,13 +36,22 @@ function Registration() {
       .email()
       .required("Email is required")
       .test("emailExist", "This email already exist", (value) => {
-        const data: any = user_redux;
-        for (const e in data) {
-          if (data[e].email === value) {
-            return false;
-          } else {
-            return true;
+        const data = user_redux;
+        console.log(data);
+
+        let flag = 0;
+
+        for (let e of data) {
+          if (e.email === value) {
+            flag = 1;
+            break;
           }
+        }
+
+        if (flag === 0) {
+          return true;
+        } else {
+          return false;
         }
       }),
 
@@ -75,12 +84,13 @@ function Registration() {
 
   const { id } = useParams();
   useEffect(() => {
-    console.log(isSubmit, "issubmit");
     if (isSubmit) {
       const data: any = user_redux;
       if (data !== null) {
         if (id) {
           for (const e in data) {
+            console.log(data, "register");
+
             if (parseInt(data[e].id) === parseInt(id)) {
               formValues.id = id;
               data[e] = formValues;

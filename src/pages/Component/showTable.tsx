@@ -4,7 +4,7 @@ import { Transaction } from "./transactiontable";
 import { useAppSelector } from "../Redux/hooks";
 import { Cookies } from "react-cookie";
 import { RootState } from "../Redux/store";
-
+import { formValue } from "../../models/interface";
 
 const ShowTable = () => {
   const transaction_redux = useAppSelector(
@@ -14,7 +14,9 @@ const ShowTable = () => {
   const cookie = new Cookies();
 
   //   const [data, setData] = useState(transaction_redux);
-  const [groupData, setGroupData] = useState([]);
+  const [groupData, setGroupData] = useState<{ [key: string]: formValue[] }>(
+    {}
+  );
   const [getData, setgetData] = useState(transaction_redux);
   const navigate = useNavigate();
 
@@ -29,10 +31,11 @@ const ShowTable = () => {
     if (isGrouped === true) {
       handleChange(groupValue);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getData]);
 
   function handleChange(e: React.ChangeEvent<HTMLSelectElement> | string) {
-    let storeResult: any = {};
+    let storeResult: { [key: string]: formValue[] } = {};
     let array = [...getData];
     setIsGrouped(true);
     if (typeof e !== "string") {
@@ -40,7 +43,7 @@ const ShowTable = () => {
         let Groupvalue = e.target.value;
         setGroupValue(Groupvalue);
         if (Groupvalue !== "") {
-          array.forEach((item:any) => {
+          array.forEach((item) => {
             let result = item[Groupvalue];
             storeResult[result] = storeResult[result] ?? [];
             storeResult[result].push(item);
@@ -48,12 +51,12 @@ const ShowTable = () => {
           setGroupData(storeResult);
         } else {
           setIsGrouped(false);
-          setGroupData([]);
+          setGroupData({});
         }
       }
     } else {
       if (e) {
-        array.forEach((item:any) => {
+        array.forEach((item) => {
           let result = item[e];
           storeResult[result] = storeResult[result] ?? [];
           storeResult[result].push(item);
@@ -61,7 +64,7 @@ const ShowTable = () => {
         setGroupData(storeResult);
       } else {
         setIsGrouped(false);
-        setGroupData([]);
+        setGroupData({});
       }
     }
   }
@@ -72,8 +75,6 @@ const ShowTable = () => {
 
   return (
     <>
-     
-
       <>
         {getData ? (
           <>
@@ -100,22 +101,18 @@ const ShowTable = () => {
             </tr>
             <Transaction getData={getData}></Transaction>
 
-            {groupData.length !== 0 &&
-              Object.keys(groupData).map(
-                (data:any) =>
-                  data !== "undefined" && (
-                    <>
-                      <h2>{data}</h2>
+            {Object.keys(groupData).map(
+              (data) =>
+                data !== "undefined" && (
+                  <>
+                    <h2>{data}</h2>
 
-                      <>
-                        <Transaction
-                          getData={groupData[data]}
-                          
-                        ></Transaction>
-                      </>
+                    <>
+                      <Transaction getData={groupData[data]}></Transaction>
                     </>
-                  )
-              )}
+                  </>
+                )
+            )}
           </>
         ) : (
           <span>No data found</span>
@@ -126,7 +123,12 @@ const ShowTable = () => {
         Create Transaction
       </Link>
       <div>
-        <input type="button" className="btn btn-primary mt-2" onClick={handleLogout} value="Logout" />
+        <input
+          type="button"
+          className="btn btn-primary mt-2"
+          onClick={handleLogout}
+          value="Logout"
+        />
       </div>
     </>
   );

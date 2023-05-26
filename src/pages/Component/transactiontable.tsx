@@ -2,18 +2,20 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../user/css/transactiontable.css";
 import { deleteTransaction } from "../Redux/Transactionduck";
-import { RootState } from "../Redux/store";
+// import { RootState } from "../Redux/store";
 import { months } from "../../defaultvalue";
-import { useAppDispatch, useAppSelector } from "../Redux/hooks";
+import { useAppDispatch } from "../Redux/hooks";
 import { formValue } from "../../models/interface";
 
-export const Transaction = (props:any) => {
-  const transaction_redux = useAppSelector((state:RootState) => state.transaction);
-  console.log(transaction_redux, "this is my redux");
+export const Transaction = (props: { getData: formValue[] }) => {
+  // const transaction_redux = useAppSelector(
+  //   (state: RootState) => state.transaction
+  // );
+
   const dispatch = useAppDispatch();
 
   const sortOrder = useRef("");
-  const [lastSortKey, setlastSortKey] = useState(null);
+  const [lastSortKey, setlastSortKey] = useState("");
 
   const [getData, setGetData] = useState(props.getData);
 
@@ -21,14 +23,14 @@ export const Transaction = (props:any) => {
     setGetData(props.getData);
   }, [props.getData]);
 
-  const sorter = (a:any, b:any) => {
+  const sorter = (a: { month: string }, b: { month: string }) => {
     return months.indexOf(a.month) - months.indexOf(b.month);
   };
-  const sorterReverse = (a:any, b:any) => {
+  const sorterReverse = (a: { month: string }, b: { month: string }) => {
     return months.indexOf(b.month) - months.indexOf(a.month);
   };
 
-  function requestSort(currentKey:any, type:any) {
+  function requestSort(currentKey: string, type: string | undefined) {
     setCurrentPage(1);
     if (sortOrder.current === "asc" && lastSortKey === currentKey) {
       sortOrder.current = "desc";
@@ -41,7 +43,7 @@ export const Transaction = (props:any) => {
     sortingCondition(currentKey, type);
   }
 
-  function sortingCondition(currentKey:any, type:any) {
+  function sortingCondition(currentKey: string, type: undefined | string) {
     if (sortOrder.current === "asc" && type === undefined) {
       let sort = [...getData].sort((a, b) =>
         a[currentKey].localeCompare(b[currentKey])
@@ -97,7 +99,7 @@ export const Transaction = (props:any) => {
     setCurrentPage(currentPage - 1);
   }
 
-  function changeCurrentPage(id:number) {
+  function changeCurrentPage(id: number) {
     setCurrentPage(id);
   }
 
@@ -105,7 +107,7 @@ export const Transaction = (props:any) => {
     setCurrentPage(currentPage + 1);
   }
 
-  function filterBySearch(e:any) {
+  function filterBySearch(e: React.ChangeEvent<HTMLInputElement>) {
     let querySearch = e.target.value;
     let filterData = [...props.getData];
     if (querySearch !== "") {
@@ -120,28 +122,29 @@ export const Transaction = (props:any) => {
         );
       });
       setGetData(filterTable);
-      console.log(getData);
     } else {
       setGetData(props.getData);
     }
   }
 
-  function deleteRecord(id:number) {
-    console.log(id,"deletee");
-    
+  function deleteRecord(id: number) {
     dispatch(deleteTransaction(id));
   }
 
   return (
     <>
       <div>
-        <input type="text" placeholder="Search.." onInput={(e)=>filterBySearch(e)} />
+        <input
+          type="text"
+          placeholder="Search.."
+          onChange={(e) => filterBySearch(e)}
+        />
       </div>
       <table className="table table-secondary">
         <thead>
           <tr>
             <th
-              onClick={() => requestSort("transDate",undefined)}
+              onClick={() => requestSort("transDate", undefined)}
               style={{ cursor: "pointer" }}
             >
               {" "}
@@ -149,25 +152,24 @@ export const Transaction = (props:any) => {
             </th>
             <th
               onClick={() => requestSort("month", "month")}
-              
               style={{ cursor: "pointer" }}
             >
               Month
             </th>
             <th
-              onClick={() => requestSort("transType",undefined)}
+              onClick={() => requestSort("transType", undefined)}
               style={{ cursor: "pointer" }}
             >
               Transaction Type
             </th>
             <th
-              onClick={() => requestSort("frmAcc",undefined)}
+              onClick={() => requestSort("frmAcc", undefined)}
               style={{ cursor: "pointer" }}
             >
               From Account
             </th>
             <th
-              onClick={() => requestSort("toAcc",undefined)}
+              onClick={() => requestSort("toAcc", undefined)}
               style={{ cursor: "pointer" }}
             >
               To Account
@@ -180,7 +182,7 @@ export const Transaction = (props:any) => {
             </th>
             <th>Filename</th>
             <th
-              onClick={() => requestSort("notes",undefined)}
+              onClick={() => requestSort("notes", undefined)}
               style={{ cursor: "pointer" }}
             >
               Notes
@@ -193,44 +195,46 @@ export const Transaction = (props:any) => {
         <tbody>
           <>
             {getData ? (
-              getData.slice(firstIndex, lastIndex).map((data:formValue, index:number) => {
-                return (
-                  <tr key={index}>
-                    <td>{data.transDate}</td>
-                    <td>{data.month}</td>
-                    <td>{data.transType}</td>
-                    <td>{data.frmAcc}</td>
-                    <td>{data.toAcc}</td>
-                    <td>
-                      {Intl.NumberFormat("en-IN", {
-                        style: "currency",
-                        currency: "INR",
-                        minimumFractionDigits: 0,
-                      }).format(parseInt(data.amount))}
-                    </td>
-                    <td>
-                      <img
-                        src={data.filename}
-                        alt="img"
-                        height="50px"
-                        width="50px"
-                      ></img>
-                    </td>
-                    <td>{data.notes}</td>
-                    <td>
-                      {" "}
-                      <Link to={`${data.id}`}>View</Link>
-                    </td>
-                    <td>
-                      {" "}
-                      <Link to={`update/${data.id}`}>Update</Link>
-                    </td>
-                    <td onClick={() => deleteRecord(data.id)}>
-                      <i className="fa fa-trash" aria-hidden="true"></i>
-                    </td>
-                  </tr>
-                );
-              })
+              getData
+                .slice(firstIndex, lastIndex)
+                .map((data: formValue, index: number) => {
+                  return (
+                    <tr key={index}>
+                      <td>{data.transDate}</td>
+                      <td>{data.month}</td>
+                      <td>{data.transType}</td>
+                      <td>{data.frmAcc}</td>
+                      <td>{data.toAcc}</td>
+                      <td>
+                        {Intl.NumberFormat("en-IN", {
+                          style: "currency",
+                          currency: "INR",
+                          minimumFractionDigits: 0,
+                        }).format(parseInt(data.amount))}
+                      </td>
+                      <td>
+                        <img
+                          src={data.filename}
+                          alt="img"
+                          height="50px"
+                          width="50px"
+                        ></img>
+                      </td>
+                      <td>{data.notes}</td>
+                      <td>
+                        {" "}
+                        <Link to={`${data.id}`}>View</Link>
+                      </td>
+                      <td>
+                        {" "}
+                        <Link to={`update/${data.id}`}>Update</Link>
+                      </td>
+                      <td onClick={() => deleteRecord(Number(data.id))}>
+                        <i className="fa fa-trash" aria-hidden="true"></i>
+                      </td>
+                    </tr>
+                  );
+                })
             ) : (
               <h1>No Data Found</h1>
             )}
@@ -262,7 +266,7 @@ export const Transaction = (props:any) => {
               </span>
             </li>
           ))}
-          {/* {console.log(currentPage,totalPages,"curr")} */}
+
           <li className="page-item">
             <span
               className={`page-link ${

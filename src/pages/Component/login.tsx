@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useAppSelector } from "../Redux/hooks";
 import { useCookies } from "react-cookie";
 import { RootState } from "../Redux/store";
+// import { loginReduxValue } from "../../models/interface";
 
 type loginValue = {
   email: string;
@@ -18,6 +19,7 @@ function Login() {
     password: "",
     token: "",
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cookies, setCookie] = useCookies(["mycookie"]);
   const [formValues, setFormValues] = useState(initialValues);
   const [isSubmit, setIsSubmit] = useState(false);
@@ -64,15 +66,12 @@ function Login() {
   const user_redux = useAppSelector((state: RootState) => state.user);
   useEffect(() => {
     if (isSubmit) {
-      console.log(user_redux);
-      const data:any = user_redux
-      console.log(data[0])
-      for (const e in data[0]) {
-    //   console.log(e)
+      const data = user_redux;
+      for (const e of data) {
         if (
-          data[0][e].email === formValues.email &&
-          data[0][e].password === formValues.password
-          ) {
+          e.email === formValues.email &&
+          e.password === formValues.password
+        ) {
           let characters = "abcdefghikl1234567890mnopqrstuvwxyz";
           let randomstring = "";
           for (var i = 0; i < 16; i++) {
@@ -85,8 +84,8 @@ function Login() {
           setCookie("mycookie", formValues, { maxAge: 3600 });
           navigate("/showTable");
         } else if (
-            data[0][e].email !== formValues.email &&
-          data[0][e].password !== formValues.password
+          e.email !== formValues.email &&
+          e.password !== formValues.password
         ) {
           navigate("/login");
         }

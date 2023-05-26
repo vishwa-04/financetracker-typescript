@@ -1,46 +1,50 @@
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import '../user/style.css'
+import "../user/style.css";
 import { useDispatch, useSelector } from "react-redux";
-import { addTransaction, updateTransaction} from "../Redux/Transactionduck";
+import { addTransaction, updateTransaction } from "../Redux/Transactionduck";
 import { RootState } from "../Redux/store";
 import { formValue } from "../../models/interface";
+export interface updateValue {
+  updateFormValue?: formValue;
+  id?: number;
+}
+function FinanceTracker({ updateFormValue, id }: updateValue) {
+  let initialValues: formValue;
+  updateFormValue
+    ? (initialValues = {
+        transDate: updateFormValue.transDate,
+        month: updateFormValue.month,
+        transType: updateFormValue.transType,
+        frmAcc: updateFormValue.frmAcc,
+        toAcc: updateFormValue.toAcc,
+        amount: updateFormValue.amount,
+        filename: updateFormValue.filename,
+        notes: updateFormValue.notes,
+        id: id,
+      })
+    : (initialValues = {
+        transDate: "",
+        month: "",
+        transType: "",
+        frmAcc: "",
+        toAcc: "",
+        amount: "",
+        filename: "",
+        notes: "",
+        id: 0,
+      });
 
-function FinanceTracker({updateFormValue,id,isUpdate}:any) {
-    let initialValues : formValue;
-    updateFormValue
-      ? (initialValues = {
-          transDate: updateFormValue.transDate,
-          month: updateFormValue.month,
-          transType: updateFormValue.transType,
-          frmAcc: updateFormValue.frmAcc,
-          toAcc: updateFormValue.toAcc,
-          amount: updateFormValue.amount,
-          filename: updateFormValue.filename,
-          notes: updateFormValue.notes,
-          id:id
-        })
-      : (initialValues = {
-          transDate: "",
-          month: "",
-          transType: "",
-          frmAcc: "",
-          toAcc: "",
-          amount: "",
-          filename: "",
-          notes: "",
-          id:0,
-        });
-  
   const navigate = useNavigate();
-//   const { id } = useParams();
   const [formValues, setFormValues] = useState(initialValues);
-  const transaction_redux = useSelector((state:RootState) => state.transaction);
+  const transaction_redux = useSelector(
+    (state: RootState) => state.transaction
+  );
   const dispatch = useDispatch();
   const [isSubmit, setIsSubmit] = useState(false);
   const date = new Date();
@@ -71,14 +75,20 @@ function FinanceTracker({updateFormValue,id,isUpdate}:any) {
 
     filename: yup
       .mixed()
-      .test("required", "Please select a file", (value:any) => {
-        return value && value.length;
-      })
-      .test("size", "File is too big", (value: any) => {
+      .test(
+        "required",
+        "Please select a file",
+        (value: yup.AnyObject | undefined | string) => {
+          return value && value.length;
+        }
+      )
+      .test("size", "File is too big", (value: yup.AnyObject | undefined) => {
         if (typeof value === "string") {
           return true;
         } else {
-          return value[0].size <= 1024 * 1024 * 1;
+          if (value !== undefined) {
+            return value[0].size <= 1024 * 1024 * 1;
+          }
         }
       }),
 
@@ -96,29 +106,29 @@ function FinanceTracker({updateFormValue,id,isUpdate}:any) {
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues,
   });
-  const convert2base64 = async (file:any) => {
+
+  const convert2base64 = async (file: Blob) => {
     let reader = new FileReader();
     reader.readAsDataURL(file);
     await new Promise<void>((resolve) => (reader.onload = () => resolve()));
     return reader.result;
   };
 
-
-  const onSubmit = async (data:any) => {
+  const onSubmit = async (data: formValue) => {
     if (data) {
-       
       if (data.filename.length > 0) {
         if (typeof data.filename !== "string") {
           let imagePath = await convert2base64(data.filename[0]);
-          data.filename = imagePath;
+          if (typeof imagePath === "string") {
+            data.filename = imagePath;
+          }
         }
         setFormValues(data);
         setIsSubmit(true);
       }
-    
     }
   };
-console.log(formValues);
+
   useEffect(() => {
     if (isSubmit) {
       let data = transaction_redux;
@@ -126,17 +136,21 @@ console.log(formValues);
         if (updateFormValue) {
           dispatch(updateTransaction({ formValues, id: id }));
         } else {
-          let previousId = data[data.length - 1].id;
-          formValues.id = previousId + 1;
-          dispatch(addTransaction(formValues));
+          if (id !== undefined) {
+            let previousId = data[data.length - 1].id;
+            if (previousId !== undefined) {
+              formValues.id = previousId + 1;
+              dispatch(addTransaction(formValues));
+            }
+          }
         }
-      } 
-      else{
+      } else {
         formValues.id = 1;
         dispatch(addTransaction([formValues]));
       }
       navigate("/showTable");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmit]);
 
   const handelRemoveImage = () => {
@@ -157,11 +171,7 @@ console.log(formValues);
                     <label>Transaction Date :</label>
                   </td>
                   <td>
-                    <input
-                      type="date"
-                      
-                      {...register("transDate")}
-                    ></input>
+                    <input type="date" {...register("transDate")}></input>
                     <tr>
                       <td>
                         <div className="errors">
@@ -176,7 +186,7 @@ console.log(formValues);
                     <label>Month Year</label>
                   </td>
                   <td>
-                    <select id="getmonth"  {...register("month")}>
+                    <select id="getmonth" {...register("month")}>
                       <option value="">--Select Month--</option>
                       <option value={`Janaury ${year}`}>Janaury {year}</option>
                       <option value={`February ${year}`}>
@@ -207,11 +217,7 @@ console.log(formValues);
                     <label>Transaction Type</label>
                   </td>
                   <td>
-                    <select
-                      id="transactionType"
-                     
-                      {...register("transType")}
-                    >
+                    <select id="transactionType" {...register("transType")}>
                       <option hidden disabled value="" selected>
                         --Select Transaction Type--
                       </option>
@@ -227,7 +233,7 @@ console.log(formValues);
                     <label>From Account</label>
                   </td>
                   <td>
-                    <select id="frmAcc"  {...register("frmAcc")}>
+                    <select id="frmAcc" {...register("frmAcc")}>
                       <option hidden disabled value="" selected>
                         --Select From Account--
                       </option>
@@ -266,11 +272,7 @@ console.log(formValues);
                     <label>Amount</label>
                   </td>
                   <td>
-                    <input
-                      type="number"
-                    
-                      {...register("amount")}
-                    ></input>
+                    <input type="number" {...register("amount")}></input>
                     <div className="errors">{errors.amount?.message}</div>
                   </td>
                 </tr>
@@ -297,7 +299,7 @@ console.log(formValues);
                       <input
                         type="file"
                         id="myFile"
-                        {...register("filename")}
+                        {...register("filename", { onChange(event) {} })}
                       />
                     )}
                   </td>
@@ -311,7 +313,6 @@ console.log(formValues);
                     <textarea
                       rows={3}
                       cols={20}
-                      
                       {...register("notes")}
                     ></textarea>
                     <div className="errors">{errors.notes?.message}</div>
@@ -337,5 +338,4 @@ console.log(formValues);
     </div>
   );
 }
-
 export default FinanceTracker;

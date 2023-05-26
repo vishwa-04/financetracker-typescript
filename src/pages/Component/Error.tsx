@@ -1,15 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "../user/css/error.css";
 
 const Error = () => {
-    return(
-        <>
-        <div>
-            <h1>404 Error Page</h1>
-            <h4>Sorry,This page doesn't Exis</h4>
-            <Link to={'/'}>Go Back to Home Page</Link>
+  return (
+    <>
+      <div className="errorBody">
+        <div className="jc-elevator">
+          <div id="myBtn" className="jc-floor">
+            <h3>404</h3>
+          </div>
+          <div id="doors" className="jc-doors">
+            <div>Ops... Wrong floor</div>
+          </div>
+
+          <div className="jc-switch">
+            <Link to={"/showTable"}></Link>
+            {/* <a href="#"></a> */}
+          </div>
         </div>
-        </>
-    )
-}
+      </div>
+    </>
+  );
+};
 export default Error;

@@ -4,7 +4,7 @@ import FinanceTracker from "./pages/user/form";
 function App() {
   return (
     <div className="App">
-      <FinanceTracker/>
+      <FinanceTracker />
     </div>
   );
 }

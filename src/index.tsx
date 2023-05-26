@@ -45,15 +45,18 @@ const Protected = (props: any) => {
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
+      <Route path="" element={<Navigate to={"/showTable"} />} />
+
       <Route
         path="login"
         element={
-          // <ErrorBoundary FallbackComponent={({error,resetErrorBoundary})=>(
-          //   <Fallback
-          //   error={error}
-          //   resetErrorBoundary={resetErrorBoundary}/>
-          // )} onError={errorHandler}>
-            <Protected isPublic cmp={<Login />} />
+          // <ErrorBoundary
+          //   FallbackComponent={({ error, resetErrorBoundary }) => (
+          //     <Fallback error={error} resetErrorBoundary={resetErrorBoundary} />
+          //   )}
+          //   onError={errorHandler}
+          // >
+          <Protected isPublic cmp={<Login />} />
           // </ErrorBoundary>
         }
       />
@@ -70,8 +73,7 @@ const router = createBrowserRouter(
           element={<Protected cmp={<UpdateTransaction />} />}
         />
       </Route>
-      <Route path="" element={<Navigate to={"/showTable"} />} />
-      <Route path="*" element={<Protected cmp={<Error />} />} />
+      <Route path="/*" element={<Error />} />
     </Route>
   )
 );
