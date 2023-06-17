@@ -8,17 +8,17 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import "./index.css";
-import Login from "./pages/Component/login";
+import Login from "./Components/login";
 import reportWebVitals from "./reportWebVitals";
-import ViewTransaction from "./pages/Component/transaction";
-import UpdateTransaction from "./pages/Component/update";
-import Registration from "./pages/Component/registration";
+import ViewTransaction from "./Components/transaction";
+import UpdateTransaction from "./Components/update";
+import Registration from "./Components/registration";
 import FinanceTracker from "./pages/user/form";
-import Error from "./pages/Component/Error";
+import Error from "./Components/Error";
 import { Cookies, CookiesProvider } from "react-cookie";
-import { FinanceStore } from "./pages/Redux/store";
+import { FinanceStore } from "./Redux/store";
 import { Provider } from "react-redux";
-import ShowTable from "./pages/Component/showTable";
+import ShowTable from "./Components/showTable";
 // import ErrorBoundary from "react-error-boundary";
 // import { Fallback } from "./pages/Component/fallback";
 

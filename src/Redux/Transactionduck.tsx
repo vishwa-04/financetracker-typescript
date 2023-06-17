@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { DefaultJson } from "../../defaultvalue";
-import { formValue } from "../../models/interface";
+import { DefaultJson } from "../defaultvalue";
+import { formValue } from "../models/interface";
 
 export type InitValue = formValue[];
 const initialState: InitValue = DefaultJson;

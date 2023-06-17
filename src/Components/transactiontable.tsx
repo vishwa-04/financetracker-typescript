@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import "../user/css/transactiontable.css";
 import { deleteTransaction } from "../Redux/Transactionduck";
 // import { RootState } from "../Redux/store";
-import { months } from "../../defaultvalue";
+import { months } from "../defaultvalue";
 import { useAppDispatch } from "../Redux/hooks";
-import { formValue } from "../../models/interface";
+import { formValue } from "../models/interface";
 
 export const Transaction = (props: { getData: formValue[] }) => {
   // const transaction_redux = useAppSelector(

@@ -4,7 +4,7 @@ import { Transaction } from "./transactiontable";
 import { useAppSelector } from "../Redux/hooks";
 import { Cookies } from "react-cookie";
 import { RootState } from "../Redux/store";
-import { formValue } from "../../models/interface";
+import { formValue } from "../models/interface";
 
 const ShowTable = () => {
   const transaction_redux = useAppSelector(

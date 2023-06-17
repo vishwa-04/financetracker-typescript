@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../user/style.css";
 import { useDispatch, useSelector } from "react-redux";
-import { addTransaction, updateTransaction } from "../Redux/Transactionduck";
-import { RootState } from "../Redux/store";
+import { addTransaction, updateTransaction } from "../../Redux/Transactionduck";
+import { RootState } from "../../Redux/store";
 import { formValue } from "../../models/interface";
 export interface updateValue {
   updateFormValue?: formValue;

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { RootState } from "../Redux/store";
 import { useAppSelector } from "../Redux/hooks";
-import { formValue } from "../../models/interface";
+import { formValue } from "../models/interface";
 import Error from "./Error";
 // import Error from "./Error";
 

@@ -27,20 +27,6 @@ function Login() {
   const validationSchema = yup.object().shape({
     email: yup.string().email().required("Email is required"),
     password: yup.string().required("Password is required").min(3).max(6),
-    // .test("passInvalid", "Wrong email or password", (value) => {
-    //   let flag = 0;
-    //   for (const e in user_redux) {
-    //     if (
-    //       user_redux[e].email === this.parent.email &&
-    //       user_redux[e].password === value.password
-    //     ) {
-    //       flag = 1;
-    //     }
-    //   }
-    //   if (flag === 0) {
-    //     errors.password = "Wrong email or password";
-    //   }
-    // }),
   });
   const {
     register,

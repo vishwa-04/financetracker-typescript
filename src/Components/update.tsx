@@ -1,10 +1,10 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { formValue } from "../../models/interface";
+import { formValue } from "../models/interface";
 import { useAppSelector } from "../Redux/hooks";
 import { RootState } from "../Redux/store";
 // import { InitValue } from "../Redux/Transactionduck";
-import FinanceTracker from "../user/form";
+import FinanceTracker from "../pages/user/form";
 import Error from "./Error";
 
 export default function UpdateTransaction() {
